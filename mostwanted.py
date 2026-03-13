@@ -21,9 +21,9 @@ def keep_alive():
     t.start()
 
 # ---------------- CONFIG ----------------
-GUILD_ID = 1442912003055292500  # ΒΑΛΕ ΤΟ SERVER ID
-LOG_CHANNEL_ID = 1480879305415200799  # ΒΑΛΕ ΤΟ LOGS CHANNEL ID
-TICKET_CATEGORY_ID = 1482062274339275012  # ΒΑΛΕ ΤΗΝ CATEGORY ΠΟΥ ΘΑ ΜΠΑΙΝΟΥΝ ΤΑ TICKETS
+GUILD_ID = 1442912003055292500  # SERVER ID
+LOG_CHANNEL_ID = 1480879305415200799  # LOGS CHANNEL ID
+TICKET_CATEGORY_ID = 1482062274339275012  # CATEGORY ΓΙΑ TICKETS
 
 STAFF_ROLES = [
     1463891827219365909,  # Founder
@@ -34,6 +34,15 @@ STAFF_ROLES = [
 # ---------------- INTENTS ----------------
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+# ---------------- CLOSE BUTTON ----------------
+class CloseButton(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="🔒 Close Ticket", style=discord.ButtonStyle.red, custom_id="close_ticket")
+    async def close(self, interaction: discord.Interaction, button: Button):
+        await interaction.channel.delete()
 
 # ---------------- DROPDOWN ----------------
 class TicketDropdown(Select):
@@ -70,37 +79,44 @@ class TicketDropdown(Select):
         # Staff permissions
         for role_id in STAFF_ROLES:
             role = guild.get_role(role_id)
-            await ticket_channel.set_permissions(role, view_channel=True, send_messages=True)
+            if role:
+                await ticket_channel.set_permissions(role, view_channel=True, send_messages=True)
 
         # Log
         log_channel = bot.get_channel(LOG_CHANNEL_ID)
-        await log_channel.send(
-            f"🎫 **Νέο Ticket**\n👤 User: {interaction.user.mention}\n📂 Category: **{self.values[0]}**"
-        )
+        if log_channel:
+            await log_channel.send(
+                f"🎫 **Νέο Ticket**\n👤 User: {interaction.user.mention}\n📂 Category: **{self.values[0]}**"
+            )
 
         # Ticket message
         embed = discord.Embed(
             title="🎫 Ticket Created",
-            description=f"👤 **User:** {interaction.user.mention}\n📂 **Category:** {self.values[0]}\n\nΠαρακαλώ περιμένετε το Staff Team.",
+            description=(
+                f"👤 **User:** {interaction.user.mention}\n"
+                f"📂 **Category:** {self.values[0]}\n\n"
+                f"Παρακαλώ περιμένετε το Staff Team."
+            ),
             color=discord.Color.green()
         )
 
-        view = CloseButton()
-        await ticket_channel.send(embed=embed, view=view)
+        await ticket_channel.send(embed=embed, view=CloseButton())
 
         await interaction.response.send_message(
             f"Το ticket σου δημιουργήθηκε: {ticket_channel.mention}",
             ephemeral=True
         )
 
-# ---------------- CLOSE BUTTON ----------------
-class CloseButton(View):
+# ---------------- PERSISTENT VIEW ----------------
+class TicketDropdownView(View):
     def __init__(self):
         super().__init__(timeout=None)
+        self.add_item(TicketDropdown())
 
-    @discord.ui.button(label="🔒 Close Ticket", style=discord.ButtonStyle.red, custom_id="close_ticket")
-    async def close(self, interaction: discord.Interaction, button: Button):
-        await interaction.channel.delete()
+@bot.event
+async def on_ready():
+    bot.add_view(TicketDropdownView())
+    print(f"Logged in as {bot.user}")
 
 # ---------------- PANEL COMMAND ----------------
 @bot.command()
@@ -113,10 +129,7 @@ async def ticketpanel(ctx):
     )
     embed.set_image(url="https://i.imgur.com/D6Ak1LL.jpeg")
 
-    view = View()
-    view.add_item(TicketDropdown())
-
-    await ctx.send(embed=embed, view=view)
+    await ctx.send(embed=embed, view=TicketDropdownView())
 
 # ---------------- RUN ----------------
 keep_alive()
