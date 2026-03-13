@@ -39,11 +39,11 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 class TicketDropdown(Select):
     def __init__(self):
         options = [
-            discord.SelectOption(label="FOUNDER/CO-FOUNDER", description="Επικοινωνία με Founder/Co-Founder"),
-            discord.SelectOption(label="GAME BUG", description="Αναφορά bug"),
-            discord.SelectOption(label="SUPPORT", description="Υποστήριξη"),
-            discord.SelectOption(label="TAKE YOUR REWARD", description="Πάρε το reward σου"),
-            discord.SelectOption(label="BAN APPEAL", description="Αίτηση unban")
+            discord.SelectOption(label="👑Founder/Co-Founder", description="Επικοινωνία με Founder/Co-Founder"),
+            discord.SelectOption(label="🪲Bug Report", description="Αναφορά bug"),
+            discord.SelectOption(label="📞Support", description="Υποστήριξη"),
+            discord.SelectOption(label="🎁Take Your Reward", description="Πάρε το reward σου"),
+            discord.SelectOption(label="🚫Ban Appeal", description="Αίτηση unban")
         ]
 
         super().__init__(
@@ -107,9 +107,9 @@ class CloseButton(View):
 @commands.has_permissions(administrator=True)
 async def ticketpanel(ctx):
     embed = discord.Embed(
-        title="🎫 Ticket System",
-        description="Επίλεξε την κατηγορία που θέλεις από το dropdown.",
-        color=discord.Color.blue()
+        title="🎫 Support Tickets",
+        description="Επίλεξε την κατηγορία που θέλεις βοήθεια:",
+        color=discord.Color.black()
     )
     embed.set_image(url="https://i.imgur.com/D6Ak1LL.jpeg")
 
