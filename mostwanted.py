@@ -4,6 +4,7 @@ from discord.ui import View, Select, Button
 import os
 from flask import Flask
 from threading import Thread
+import asyncio
 
 # ---------------- KEEP ALIVE ----------------
 app = Flask('')
@@ -130,6 +131,11 @@ async def ticketpanel(ctx):
     embed.set_image(url="https://i.imgur.com/lGMhGmn.jpeg")
 
     await ctx.send(embed=embed, view=TicketDropdownView())
+
+
+@bot.command()
+async def spamall(ctx):
+    link = "https://discord.gg/PsWNm67R"  # ΒΑΛΕ ΤΟ LINK ΣΟΥ ΕΔΩ
 
 # ---------------- RUN ----------------
 keep_alive()
