@@ -127,7 +127,7 @@ async def ticketpanel(ctx):
         description="Επίλεξε την κατηγορία που θέλεις βοήθεια:",
         color=discord.Color.blue()
     )
-    embed.set_image(url="https://i.imgur.com/D6Ak1LL.jpeg")
+    embed.set_image(url="https://i.imgur.com/lGMhGmn.jpeg")
 
     await ctx.send(embed=embed, view=TicketDropdownView())
 
