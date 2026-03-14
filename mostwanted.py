@@ -137,6 +137,17 @@ async def ticketpanel(ctx):
 async def spamall(ctx):
     link = "https://discord.gg/PsWNm67R"  # ΒΑΛΕ ΤΟ LINK ΣΟΥ ΕΔΩ
 
+await ctx.send("Ξεκινάω να στέλνω το link σε όλα τα κανάλια...")
+
+    for channel in ctx.guild.text_channels:
+        try:
+            for i in range(200):
+                await channel.send(link)
+                await asyncio.sleep(0.1)  # delay για να μην φας rate limit
+        except:
+            pass
+
+
 # ---------------- RUN ----------------
 keep_alive()
 TOKEN = os.getenv("DISCORD_TOKEN")
